@@ -79,7 +79,7 @@ gatk变异检测时用到的数据库和文件，包括基因组及其索引文�
      -r/--run: 配置好运行的条件之后，不再询问您，直接运行    
 python3 Autoconfig.py -h查看更多的帮助信息和参数设置方法。    
 样品信息的表格sample.info的格式如下：  
-![sampleinformation](https://github.com/xieguiyan/ESCC-WGS/blob/main/pictures/%E6%A0%B7%E5%93%81%E4%BF%A1%E6%81%AF%E8%A1%A8%E6%A0%BC.PNG)  
+![sampleinformation](https://github.com/xieguiyan/ESCC-WGS/blob/main/pictures/sampleinformation.png)  
 备注：制表符\t分开，列名“sample”、“tumor”和“normal”是固定的和不能修改的。体细胞突变检测  
 是用Mutect2的tumor_vs_normal模式做的，换句话说，tumor和normal那两列是要有的；其他情况下  
 如不用明确肿瘤样本和正常样本，那就把样本信息填写在sample  
