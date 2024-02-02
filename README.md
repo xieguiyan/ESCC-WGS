@@ -1,17 +1,17 @@
 # ESCC-WGS
 WGS analysis for metastatic esophageal squamous cell carcinoma
 ## Ownership
-ESCC-WGS流程是由GuoLab团队开发的，点击[这里](https://guolab.wchscu.cn/)进入实验室主
+ESCC-WGS流程是由**GuoLab**团队开发的，点击[这里](https://guolab.wchscu.cn/)进入实验室主
 页，了解使用条款。
 
 
 ## 流程的整体描述
-ESCC-WGS流程是想对全基因组测序（Whole Genome Sequencing, WGS）原始数据进行分析和处  
+ESCC-WGS流程是想对**全基因组测序**（Whole Genome Sequencing, WGS）原始数据进行分析和处  
 理的，分析的内容包括：
-1. SNV and indel calling；
-2. Copy number analysis and LOH identification（更新中）；
-3. structure variants detections（后续）；
-4. 后续的更多分析。  
+- 1. SNV and indel calling；
+- 2. Copy number analysis and LOH identification（更新中）；
+- 3. structure variants detections（后续）；
+- 4. 后续的更多分析。  
    包含体细胞突变模块和胚系突变模块。
 
 
@@ -89,14 +89,17 @@ python3 Autoconfig.py -h查看更多的帮助信息和参数设置方法。
 的时候，或者用户想自己配置流程的相关细节的时候。  
 >步骤描述如下：  
 >>步骤1：修改工作脚本work.smk里面的参数workp，因为work.smk本身是不包含正式分析时用到的实  
-际参数的，workp参数的唯一作用就是告诉work.smk它的配置文件work.WGS.yaml在哪:   
-$workp/work.WGS.yaml；  
+际参数的，workp参数的唯一作用就是告诉work.smk它的配置文件work.WGS.yaml在哪: 
+$workp/work.WGS.yaml；
+>>
 >>步骤2：修改配置文件work.WGS.yaml里面的参数，配置文件里面的参数有很多，比如说基因组版本  
 （可选hg19或hg38，默认hg38），里面会写每个参数是用来干嘛的，其中，workp、rawdata和  
 sampleinformation三个参数是必须要修改的，其他参数的话可以根据需要修改；    
+>>
 >>步骤3：确认没问题之后，运行的命令 “nohup snakemake -s work.smk --cores 64 1>run.o 2>&1”  
 (如果snakemake没有添加到您的环境变量里，这里的snakemake换成绝对/相对路径)，就可以正式开始  
 分析。所以，使用前请先下载安装好[snakemake](https://pypi.org/project/snakemake/)，对于snakemake的使用不熟悉的地方，可以学习[手册](https://snakemake.readthedocs.io/en/stable/)  
+>>
 >>步骤4（可选的）：到步骤3，其实ESCC-WGS已经开始运行了，但是一般在集群上有专门的资源和任务  
 调度系统(如slurm、bsub和qsub等)，所以建议您换种方式，如用slurms系统，编辑run.sh内容如下：    
 ```
