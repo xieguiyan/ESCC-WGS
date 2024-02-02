@@ -7,7 +7,8 @@ ESCC-WGS流程是由GuoLab团队开发的，点击[这里](https://guolab.wchscu
 
 
 ## Software
-bwa v0.7.17-r1188: http://sourceforge.net/projects/bio-bwa/
+bwa(v0.7.17-r1188): http://sourceforge.net/projects/bio-bwa/
+
 [fastq-dump v3.0.6](https://ftp-trace.ncbi.nlm.nih.gov/sra/): https://ftp-trace.ncbi.nlm.nih.gov/sra/ \r
 [FastQC v0.12.1](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/): https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 [fastp v0.23.4](https://github.com/OpenGene/fastp): https://github.com/OpenGene/fastp
