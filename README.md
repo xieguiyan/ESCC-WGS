@@ -102,8 +102,8 @@ $workp/work.WGS.yaml；
 (如果snakemake没有添加到您的环境变量里，这里的snakemake换成绝对/相对路径)，就可以正式开始  
 分析。所以，使用前请先下载安装好[snakemake](https://pypi.org/project/snakemake/)，对于snakemake的使用不熟悉的地方，可以学习[手册](https://snakemake.readthedocs.io/en/stable/)  
 
-&emsp;&emsp;步骤4（可选的）：到步骤3，其实ESCC-WGS已经开始运行了，但是一般在集群上有专门的资源和任务  
-调度系统(如slurm和LSF)，所以建议您换种方式，如用slurms系统，编辑run.sh内容如下：    
+&emsp;&emsp;步骤4（可选的）：到步骤3，其实ESCC-WGS已经可以正式运行了，但是一般在集群上有专门的资源和
+任务调度系统(如slurm和LSF)，所以建议您换种方式，如用slurms系统，编辑run.sh内容如下：    
  ```
  #!/bin/bash
  #SBATCH -p cn
@@ -114,7 +114,7 @@ $workp/work.WGS.yaml；
  #SBATCH -e run.e
  snakemake -w work.smk --cores 64 1>run.o 2>&1
  ```
-&emsp;&emsp;接着 sbatch run.sh投递就可以。
+接着 sbatch run.sh投递就可以。
 <br>
 <br>
 ### 使用Docker
