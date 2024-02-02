@@ -92,7 +92,7 @@ python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。
 的时候，或者用户想自己配置流程的相关细节的时候。  
 >步骤描述如下：  
 >>步骤1：修改工作脚本work.smk里面的参数workp，因为work.smk本身是不包含正式分析时用到的实  
-际参数的，workp参数的唯一作用就是告诉work.smk它的配置文件work.WGS.yaml在哪: 
+际参数的，workp参数的唯一作用就是告诉work.smk它的配置文件work.WGS.yaml在哪:   
 $workp/work.WGS.yaml；
 >>
 >>步骤2：修改配置文件work.WGS.yaml里面的参数，配置文件里面的参数有很多，比如说基因组版本  
@@ -105,7 +105,7 @@ sampleinformation三个参数是必须要修改的，其他参数的话可以根
 >>
 >>步骤4（可选的）：到步骤3，其实ESCC-WGS已经开始运行了，但是一般在集群上有专门的资源和任务  
 调度系统(如slurm、bsub和qsub等)，所以建议您换种方式，如用slurms系统，编辑run.sh内容如下：    
-```
+>>```
 #!/bin/bash
 #SBATCH -p cn
 #SBATCH -J ESCC-WGS
