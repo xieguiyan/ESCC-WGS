@@ -1,8 +1,7 @@
 # ESCC-WGS
 WGS analysis for metastatic esophageal squamous cell carcinoma
 ## Ownership
-ESCC-WGS流程是由**GuoLab**团队开发的，点击[这里](https://guolab.wchscu.cn/)进入实验室主  
-页，了解使用条款。
+ESCC-WGS流程是由**GuoLab**团队开发的，点击[这里](https://guolab.wchscu.cn/)进入实验室主页，了解使用条款。
 <br>
 <br>
 ## 流程的整体描述
