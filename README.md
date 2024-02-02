@@ -3,8 +3,8 @@ WGS analysis for metastatic esophageal squamous cell carcinoma
 ## Ownership
 ESCC-WGS流程是由**GuoLab**团队开发的，点击[这里](https://guolab.wchscu.cn/)进入实验室主
 页，了解使用条款。
-
-
+<br>
+<br>
 ## 流程的整体描述
 ESCC-WGS流程是想对**全基因组测序**（Whole Genome Sequencing, WGS）原始数据进行分析和处  
 理的，分析的内容包括：
@@ -14,8 +14,8 @@ ESCC-WGS流程是想对**全基因组测序**（Whole Genome Sequencing, WGS）�
 - 4. 后续的更多分析。 
 
 流程包含体细胞突变模块和胚系突变模块。
-
-
+<br>
+<br>
 ## 流程的方法描述
 ### 体细胞突变检测部分
 #### 数据质控和过滤
@@ -40,9 +40,9 @@ FastQC评估碱基测序质量，multiqc汇总所有样本评估结果（因为�
 等待后续更新
 
 ### 胚系突变检测部分
-体细胞图突变检测相对重要，这部分就暂时空着~
-
-
+\ \ \   
+<br>
+<br>
 ## 流程的相关依赖
 ### 依赖的软件
 FastQC (v0.11.1): https://www.bioinformatics.babraham.ac.uk/projects/fastqc/  
@@ -57,15 +57,15 @@ snakemake* (v7.32.4): https://pypi.org/project/snakemake/
 MultiQC (v1.19): https://pypi.org/project/multiqc/  
 R (v4.1.0): /   
 python(2.7.17): /    
-note:  标记`“*”`的软件是说在流程中作用相对重要，不可或缺~~
+&emsp;&emsp;note: 标记`“*”`的软件是说在流程中作用相对重要，不可或缺~~
 
 ### 依赖的数据库和除测序数据之外的输入文件
-&nbsp;&nbsp;bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致；  
-&nbsp;&nbsp;gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从gatk官网的  
+&emsp;&emsp;bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致；  
+&emsp;&emsp;gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从gatk官网的  
 [Resource bundle数据](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/)下载，但是需要借助lftp工具下载，所以请先用
 "sudo apt-get install lftp"安装lftp。  
-
-
+<br>
+<br>
 ## 流程的使用说明
 ### 在本地上运行
 如果还没有获取到流程，点击[链接](https://github.com/xieguiyan/ESCC-WGS)进入github下载。
@@ -75,13 +75,15 @@ note:  标记`“*”`的软件是说在流程中作用相对重要，不可或�
 ```
  Command: python3 Autoconfig.py -w workp/  -d rawdata/  -s sample.info  -r
 ```  
-参数描述：  
-&nbsp;&nbsp;-s/--sample-information: 记录样本信息的表格  
-&nbsp;&nbsp;-r/--run: 配置好运行的条件之后，不再询问您，直接运行    
-python3 Autoconfig.py -h查看更多的帮助信息和参数设置方法。    
+&emsp;&emsp;参数描述：  
+&emsp;&emsp;&emsp;&emsp;&emsp;-s/--sample-information: 记录样本信息的表格  
+&emsp;&emsp;&emsp;&emsp;&emsp;-r/--run: 配置好运行的条件之后，不再询问您，直接运行    
+```
+python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。    
+```
 样品信息的表格sample.info的格式如下：  
 ![sampleinformation](https://github.com/xieguiyan/ESCC-WGS/blob/main/pictures/sampleinformation.png)  
-&nbsp;&nbsp;备注：制表符\t分开，列名“sample”、“tumor”和“normal”是固定的和不能修改的。体细胞突变检测  
+&emsp;&emsp;备注：制表符\t分开，列名“sample”、“tumor”和“normal”是固定的和不能修改的。体细胞突变检测  
 是用Mutect2的tumor_vs_normal模式做的，换句话说，tumor和normal那两列是要有的；其他情况下  
 如不用明确肿瘤样本和正常样本，那就把样本信息填写在sample  
 
@@ -118,11 +120,10 @@ snakemake -w work.smk --cores 64 1>run.o 2>&1
 ### 使用Docker
 
  等待后续的更新 
-
-
-
+<br>
+<br>
+<br>
 ------
-
 ~~THE END ~~ 
 
 
