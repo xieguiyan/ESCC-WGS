@@ -3,6 +3,8 @@ WGS analysis for metastatic esophageal squamous cell carcinoma
 ## Ownership
 ESCC-WGS流程是由GuoLab团队开发的，点击[这里](https://guolab.wchscu.cn/)进入实验室主
 页，了解使用条款。
+
+
 ## 流程的整体描述
 ESCC-WGS流程是想对全基因组测序（Whole Genome Sequencing, WGS）原始数据进行分析和处
 理的，分析的内容包括：
@@ -11,7 +13,6 @@ ESCC-WGS流程是想对全基因组测序（Whole Genome Sequencing, WGS）原�
 3. structure variants detections（后续）；
 4. 后续的更多分析。  
    包含体细胞突变模块和胚系突变模块。
-
 
 
 ## 流程的方法描述
@@ -40,6 +41,7 @@ FastQC评估碱基测序质量，multiqc汇总所有样本评估结果（因为�
 ### 胚系突变检测部分
 体细胞图突变检测相对重要，这部分就暂时空着~
 
+
 ## 流程的相关依赖
 ### 依赖的软件
 FastQC (v0.11.1): https://www.bioinformatics.babraham.ac.uk/projects/fastqc/  
@@ -52,14 +54,14 @@ fastp (v0.23.4): https://github.com/OpenGene/fastp
 GATK* (v4.5.0.0): https://github.com/broadinstitute/gatk  
 snakemake* (v7.32.4): https://pypi.org/project/snakemake/  
 MultiQC (v1.19): https://pypi.org/project/multiqc/  
-R (v4.1.0): / 
-python(2.7.17): /  
+R (v4.1.0): /   
+python(2.7.17): /    
 note:  标记`”*“`的软件是说在流程中作用相对重要，不可或缺~~
 
 ### 依赖的数据库和除测序数据之外的输入文件
-bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致；
+bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致；  
 gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从[gatk官网Resource bundle数据](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/)下载，但是需要
-借助lftp工具下载，所以请先用"sudo apt-get install lftp"安装lftp。
+借助lftp工具下载，所以请先用"sudo apt-get install lftp"安装lftp。  
 
 
 ## 流程的使用说明
