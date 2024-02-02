@@ -20,7 +20,7 @@ ESCC-WGS流程是想对全基因组测序（Whole Genome Sequencing, WGS）原�
 #### 数据质控和过滤
 FastQC评估碱基测序质量，multiqc汇总所有样本评估结果（因为是用snakemake将样本分开跑的，  
 可能有些样本已经跑了很多步，有些样本还没开始跑，所以multiqc不一定是在第一步跑的）。如果  
-测序质量较好（一般都是除了GC含量不太正常外，其他指标全绿），会直接进行序列比对<sup>[[1]](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8421382/)</sup>；  
+测序质量较好（一般都是除了GC含量不太正常外，其他指标PASS），会直接进行序列比对<sup>[[1]](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8421382/)</sup>；  
 否则用fastp使用默认参数，去除接头和低质量序列。
 #### 比对到基因组
 
