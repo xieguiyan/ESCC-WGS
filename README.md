@@ -6,7 +6,7 @@ ESCC-WGS流程是由GuoLab团队开发的，点击[这里](https://guolab.wchscu
 
 
 ## 流程的整体描述
-ESCC-WGS流程是想对全基因组测序（Whole Genome Sequencing, WGS）原始数据进行分析和处
+ESCC-WGS流程是想对全基因组测序（Whole Genome Sequencing, WGS）原始数据进行分析和处  
 理的，分析的内容包括：
 1. SNV and indel calling；
 2. Copy number analysis and LOH identification（更新中）；
