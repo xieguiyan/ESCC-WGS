@@ -83,18 +83,18 @@ python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。
 
 <div align=left> <img src="sampleinformation.png" width=50%></div>
 
-&emsp;&emsp;备注：制表符\t分开，<font color='red'> 列名“sample”、“tumor”和“normal”。体细胞突变检测是**用Mutect2的   
-tumor_vs_normal模式**做的，换句话说，tumor和normal那两列是要有的；其他情况下，如不用明确肿瘤样本
-和正常样本，那就把样本信息填写在sample那列。  
+&emsp;&emsp;备注：制表符`\t`分开，**列名“sample”、“tumor”和“normal”是固定的和不可修改的**。体细胞突变检
+测是**用Mutect2的tumor_vs_normal模式**做的，换句话说，tumor和normal那两列是要有的；其他情况下，如不
+用明确肿瘤样本和正常样本，那就把样本信息填写在“sample”那列。  
 
 #### 按步骤来配置和使用流程
 按步骤配置来使用流程，用于 `“快速入手”`不能完成**ESCC-WGS**流程的参数修改和使流程顺利开始运行  
 的时候，或者用户想自己配置流程的相关细节的时候。  
 步骤描述如下：  
-&emsp;&emsp;步骤1：修改工作脚本work.smk里面的参数workp，从而指定work.smk的配置文件work.WGS.yaml在哪:   
+&emsp;&emsp;步骤1：修改工作脚本work.smk里面的参数*workp*，从而指定work.smk的配置文件work.WGS.yaml在哪:   
 $workp/work.WGS.yaml；
 
-&emsp;&emsp;步骤2：修改配置文件work.WGS.yaml里面的参数，其中，workp、rawdata和 sampleinformation 3个  
+&emsp;&emsp;步骤2：修改配置文件work.WGS.yaml里面的参数，其中，*workp*、*rawdata*和 *sampleinformation* 3个  
 参数是必须要修改的，其他参数的话可以根据需要修改；    
 
 &emsp;&emsp;步骤3：确认没问题之后，运行的命令 `“nohup snakemake -s work.smk --cores 64 1>run.o 2>&1”`  
