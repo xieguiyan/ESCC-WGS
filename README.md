@@ -91,32 +91,32 @@ python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。
 #### 按步骤配置来使用流程
 按步骤配置来使用流程，用于 “快速入手”不能完成ESCC-WGS流程的参数修改和使流程顺利开始运行  
 的时候，或者用户想自己配置流程的相关细节的时候。  
->步骤描述如下：  
->>步骤1：修改工作脚本work.smk里面的参数workp，因为work.smk本身是不包含正式分析时用到的实  
+步骤描述如下：  
+步骤1：修改工作脚本work.smk里面的参数workp，因为work.smk本身是不包含正式分析时用到的实  
 际参数的，workp参数的唯一作用就是告诉work.smk它的配置文件work.WGS.yaml在哪:   
 $workp/work.WGS.yaml；
->>
->>步骤2：修改配置文件work.WGS.yaml里面的参数，配置文件里面的参数有很多，比如说基因组版本  
+
+步骤2：修改配置文件work.WGS.yaml里面的参数，配置文件里面的参数有很多，比如说基因组版本  
 （可选hg19或hg38，默认hg38），里面会写每个参数是用来干嘛的，其中，workp、rawdata和  
 sampleinformation三个参数是必须要修改的，其他参数的话可以根据需要修改；    
->>
->>步骤3：确认没问题之后，运行的命令 “nohup snakemake -s work.smk --cores 64 1>run.o 2>&1”  
+
+步骤3：确认没问题之后，运行的命令 “nohup snakemake -s work.smk --cores 64 1>run.o 2>&1”  
 (如果snakemake没有添加到您的环境变量里，这里的snakemake换成绝对/相对路径)，就可以正式开始  
 分析。所以，使用前请先下载安装好[snakemake](https://pypi.org/project/snakemake/)，对于snakemake的使用不熟悉的地方，可以学习[手册](https://snakemake.readthedocs.io/en/stable/)  
->>
->>步骤4（可选的）：到步骤3，其实ESCC-WGS已经开始运行了，但是一般在集群上有专门的资源和任务  
+
+步骤4（可选的）：到步骤3，其实ESCC-WGS已经开始运行了，但是一般在集群上有专门的资源和任务  
 调度系统(如slurm、bsub和qsub等)，所以建议您换种方式，如用slurms系统，编辑run.sh内容如下：    
->> ```
->> #!/bin/bash
->> #SBATCH -p cn
->> #SBATCH -J ESCC-WGS
->> #SBATCH -N 1
->> #SBATCH -n 64
->> #SBATCH -O run.o
->> #SBATCH -e run.e
->> snakemake -w work.smk --cores 64 1>run.o 2>&1
->> ```
->>接着 sbatch run.sh投递就可以。
+ ```
+ #!/bin/bash
+ #SBATCH -p cn
+ #SBATCH -J ESCC-WGS
+ #SBATCH -N 1
+ #SBATCH -n 64
+ #SBATCH -O run.o
+ #SBATCH -e run.e
+ snakemake -w work.smk --cores 64 1>run.o 2>&1
+ ```
+接着 sbatch run.sh投递就可以。
 
 ### 使用Docker
 等待后续更新
