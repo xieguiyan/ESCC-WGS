@@ -5,7 +5,7 @@ ESCC-WGS流程是由**GuoLab**团队开发的，点击[这里](https://guolab.wc
 <br>
 <br>
 ## 流程的整体描述
-ESCC-WGS流程是想对**全基因组测序**（Whole Genome Sequencing, WGS）原始数据进行分析和处  
+**ESCC-WGS**流程是想对**全基因组测序**（Whole Genome Sequencing, WGS）原始数据进行分析和处  
 理的，分析的内容包括：
 - 1. SNV and indel calling；
 - 2. Copy number analysis and LOH identification（更新中）；
@@ -59,9 +59,9 @@ python(2.7.17): /
 &emsp;&emsp;note: 标记`“*”`的软件是说在流程中作用相对重要，不可或缺~~
 
 ### 依赖的数据库和除测序数据之外的输入文件
-&emsp;&emsp;bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致；  
+&emsp;&emsp;**bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致**；  
 &emsp;&emsp;gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从gatk官网的Resource/[bundle](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/)   
-下载，但是需要借助lftp工具下载，所以请先用"sudo apt-get install lftp"安装lftp。  
+下载，但是需要借助lftp工具下载，所以请先用`"sudo apt-get install lftp"`安装lftp。  
 <br>
 <br>
 ## 流程的使用说明
@@ -79,16 +79,16 @@ python(2.7.17): /
 ```
 python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。    
 ```
-样品信息的表格sample.info的格式如下：  
+**样品信息的表格**sample.info的格式如下：  
 
 <div align=left> <img src="sampleinformation.png" width=50%></div>
 
 &emsp;&emsp;备注：制表符\t分开，列名“sample”、“tumor”和“normal”是固定的和不能修改的。体细胞突变检测  
-是用Mutect2的tumor_vs_normal模式做的，换句话说，tumor和normal那两列是要有的；其他情况下  
+是**用Mutect2的tumor_vs_normal模式**做的，换句话说，tumor和normal那两列是要有的；其他情况下  
 如不用明确肿瘤样本和正常样本，那就把样本信息填写在sample  
 
 #### 按步骤来配置和使用流程
-按步骤配置来使用流程，用于 “快速入手”不能完成ESCC-WGS流程的参数修改和使流程顺利开始运行  
+按步骤配置来使用流程，用于 `“快速入手”`不能完成**ESCC-WGS**流程的参数修改和使流程顺利开始运行  
 的时候，或者用户想自己配置流程的相关细节的时候。  
 步骤描述如下：  
 &emsp;&emsp;步骤1：修改工作脚本work.smk里面的参数workp，从而指定work.smk的配置文件work.WGS.yaml在哪:   
@@ -97,11 +97,11 @@ $workp/work.WGS.yaml；
 &emsp;&emsp;步骤2：修改配置文件work.WGS.yaml里面的参数，其中，workp、rawdata和 sampleinformation 3个
 参数是必须要修改的，其他参数的话可以根据需要修改；    
 
-&emsp;&emsp;步骤3：确认没问题之后，运行的命令 “nohup snakemake -s work.smk --cores 64 1>run.o 2>&1”  
+&emsp;&emsp;步骤3：确认没问题之后，运行的命令 `“nohup snakemake -s work.smk --cores 64 1>run.o 2>&1”`  
 (如果snakemake没有添加到您的环境变量里，这里的snakemake换成绝对/相对路径)，就可以正式开始  
 分析。所以，使用前请先下载安装好[snakemake](https://pypi.org/project/snakemake/)，对于snakemake的使用不熟悉的地方，可以学习[手册](https://snakemake.readthedocs.io/en/stable/)  
 
-&emsp;&emsp;步骤4（可选的）：到步骤3，其实ESCC-WGS已经可以正式运行了，但是一般在集群上有专门的资源和
+&emsp;&emsp;步骤4（可选的）：到步骤3，其实**ESCC-WGS**已经可以正常运行了，但是一般在集群上有专门的资源和
 任务调度系统(如slurm和LSF)，所以建议您换种方式，如用slurms系统，编辑run.sh内容如下：    
  ```
  #!/bin/bash
@@ -113,7 +113,7 @@ $workp/work.WGS.yaml；
  #SBATCH -e run.e
  snakemake -w work.smk --cores 64 1>run.o 2>&1
  ```
-接着 sbatch run.sh投递就可以。
+接着 `sbatch run.sh`投递就可以。
 <br>
 <br>
 ### 使用Docker
