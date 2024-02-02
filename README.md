@@ -105,16 +105,16 @@ sampleinformation三个参数是必须要修改的，其他参数的话可以根
 >>
 >>步骤4（可选的）：到步骤3，其实ESCC-WGS已经开始运行了，但是一般在集群上有专门的资源和任务  
 调度系统(如slurm、bsub和qsub等)，所以建议您换种方式，如用slurms系统，编辑run.sh内容如下：    
->>```
-#!/bin/bash
-#SBATCH -p cn
-#SBATCH -J ESCC-WGS
-#SBATCH -N 1
-#SBATCH -n 64
-#SBATCH -O run.o
-#SBATCH -e run.e
-snakemake -w work.smk --cores 64 1>run.o 2>&1
-```
+>> ```
+>> #!/bin/bash
+>> #SBATCH -p cn
+>> #SBATCH -J ESCC-WGS
+>> #SBATCH -N 1
+>> #SBATCH -n 64
+>> #SBATCH -O run.o
+>> #SBATCH -e run.e
+>> snakemake -w work.smk --cores 64 1>run.o 2>&1
+>> ```
 >>接着 sbatch run.sh投递就可以。
 
 ### 使用Docker
