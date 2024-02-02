@@ -61,7 +61,7 @@ python(2.7.17): /
 
 ### 依赖的数据库和除测序数据之外的输入文件
 &emsp;&emsp;bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致；  
-&emsp;&emsp;gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从gatk官网的Resource[bundle](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/)   
+&emsp;&emsp;gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从gatk官网的Resource/[bundle](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/)   
 下载，但是需要借助lftp工具下载，所以请先用"sudo apt-get install lftp"安装lftp。  
 <br>
 <br>
@@ -82,7 +82,7 @@ python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。
 ```
 样品信息的表格sample.info的格式如下：  
 
-<div align=center> <img src="sampleinformation.png" width=50%></div>
+<div align=left> <img src="sampleinformation.png" width=50%></div>
 
 &emsp;&emsp;备注：制表符\t分开，列名“sample”、“tumor”和“normal”是固定的和不能修改的。体细胞突变检测  
 是用Mutect2的tumor_vs_normal模式做的，换句话说，tumor和normal那两列是要有的；其他情况下  
@@ -115,7 +115,8 @@ $workp/work.WGS.yaml；
  snakemake -w work.smk --cores 64 1>run.o 2>&1
  ```
 &emsp;&emsp;接着 sbatch run.sh投递就可以。
-
+<br>
+<br>
 ### 使用Docker
 等待后续更新
 
