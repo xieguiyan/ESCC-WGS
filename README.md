@@ -83,9 +83,9 @@ python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。
 
 <div align=left> <img src="sampleinformation.png" width=50%></div>
 
-&emsp;&emsp;备注：制表符\t分开，<font color="red">列名“sample”、“tumor”和“normal”是固定的和不能修改的</font>。体细胞突变检测<font color=red>标签中的字会显示为红色</font>   
+&emsp;&emsp;备注：制表符\t分开，<font color='red'> 列名“sample”、“tumor”和“normal” </font>。体细胞突变检测   
 是**用Mutect2的tumor_vs_normal模式**做的，换句话说，tumor和normal那两列是要有的；其他情况下  
-如不用明确肿瘤样本和正常样本，那就把样本信息填写在sample  
+如不用明确肿瘤样本和正常样本，那就把样本信息填写在sample那列。  
 
 #### 按步骤来配置和使用流程
 按步骤配置来使用流程，用于 `“快速入手”`不能完成**ESCC-WGS**流程的参数修改和使流程顺利开始运行  
