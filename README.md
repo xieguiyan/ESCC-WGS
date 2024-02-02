@@ -1,7 +1,7 @@
 # ESCC-WGS
 WGS analysis for metastatic esophageal squamous cell carcinoma
 ## Ownership
-ESCC-WGS流程是由**GuoLab**团队开发的，点击[这里](https://guolab.wchscu.cn/)进入实验室主
+ESCC-WGS流程是由**GuoLab**团队开发的，点击[这里](https://guolab.wchscu.cn/)进入实验室主  
 页，了解使用条款。
 <br>
 <br>
@@ -83,6 +83,7 @@ python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。
 样品信息的表格sample.info的格式如下：  
 
 <div align=center> <img src="pictures/sampleinformation.png" width=50%></div>
+
 &emsp;&emsp;备注：制表符\t分开，列名“sample”、“tumor”和“normal”是固定的和不能修改的。体细胞突变检测  
 是用Mutect2的tumor_vs_normal模式做的，换句话说，tumor和normal那两列是要有的；其他情况下  
 如不用明确肿瘤样本和正常样本，那就把样本信息填写在sample  
