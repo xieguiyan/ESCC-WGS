@@ -11,7 +11,8 @@ ESCC-WGS流程是想对**全基因组测序**（Whole Genome Sequencing, WGS）�
 - 1. SNV and indel calling；
 - 2. Copy number analysis and LOH identification（更新中）；
 - 3. structure variants detections（后续）；
-- 4. 后续的更多分析。   
+- 4. 后续的更多分析。 
+
 流程包含体细胞突变模块和胚系突变模块。
 
 
