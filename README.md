@@ -60,8 +60,8 @@ note:  标记`“*”`的软件是说在流程中作用相对重要，不可或�
 
 ### 依赖的数据库和除测序数据之外的输入文件
 bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致；  
-gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从[gatk官网Resource bundle数据](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/)  
-下载，但是需要  借助lftp工具下载，所以请先用
+gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从gatk官网的
+[Resource bundle数据](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/)下载，但是需要  借助lftp工具下载，所以请先用
 "sudo apt-get install lftp"安装lftp。  
 
 
@@ -71,15 +71,15 @@ gatk变异检测时用到的数据库和文件，包括基因组及其索引文�
 
 #### 快速入手 
   工具`Autoconfig.py`可以引导和帮助您快速入手，使用方法参考下面的简单例子    
- *eg,. python3 Autoconfig.py -w workp/  -d rawdata/  -s sample.info  -r *  
-参数描述：
+```
+ Command: python3 Autoconfig.py -w workp/  -d rawdata/  -s sample.info  -r
+```  
+参数描述：  
      -s/--sample-information: 记录样本信息的表格  
-     -r/--run: 配置好运行的条件之后，不再询问您，直接运行  
+     -r/--run: 配置好运行的条件之后，不再询问您，直接运行    
 python3 Autoconfig.py -h查看更多的帮助信息和参数设置方法。    
 样品信息的表格sample.info的格式如下：  
-
-![](pictures//样品信息表格.PNG)
-
+![sampleinformation](https://github.com/xieguiyan/ESCC-WGS/pictures/样品信息表格.PNG)
 备注：制表符\t分开，列名“sample”、“tumor”和“normal”是固定的和不能修改的。体细胞突变检测  
 是用Mutect2的tumor_vs_normal模式做的，换句话说，tumor和normal那两列是要有的；其他情况下  
 如不用明确肿瘤样本和正常样本，那就把样本信息填写在sample  
