@@ -23,17 +23,20 @@ FastQC评估碱基测序质量，multiqc汇总所有样本评估结果（因为�
 测序质量较好（一般都是除了GC含量不太正常外，其他指标PASS），会直接进行序列比对<sup>[[1]](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8421382/)</sup>；  
 否则用fastp使用默认参数，去除接头和低质量序列。
 #### 比对到基因组
-bwa使用参数“-M -R "@RG\tID:foo_lane_sample\tPL:illumina\tLB:library_sample\tSM:sample” 对比到基因组，samtools排序和建立索引。
+bwa使用参数`“-M -R "@RG\tID:foo_lane_sample\tPL:illumina\tLB:library_sample\tSM:sample”` 对比到基因组，   
+samtools排序和建立索引。
 #### 标记去重复
 picard使用默认参数重复。
 #### 序列重新比对
 因为在GATK4.0版本之后，HapplotypeCaller会进行局部重新比对，所以这部分就不做了，
 #### 碱基质量校对
-使用gatk的BaseRecalibrator和ApplyBQSR工具进行局部重新比对，其中BaseRecalibrator使用参数`“--known-sites dbsnp_146.hg38.vcf.gz 
---known-sites Mills_and_1000G_gold_standard.indels.hg38.vcf.gz”`得到校准表，，ApplyBQSR不需要额外参数简单输入输出就好。
+使用gatk的BaseRecalibrator和ApplyBQSR工具进行局部重新比对，其中BaseRecalibrator使用参数`“--known-sites    
+dbsnp_146.hg38.vcf.gz --known-sites Mills_and_1000G_gold_standard.indels.hg38.vcf.gz”`得到校准表，   
+ApplyBQSR不需要额外参数简单输入输出就好。
 #### SNV and indel calling
-用gatk的Mutect2工具使用默认参数“Mutect2 -R genome.fa -I tumor.bam -I normal.bam -tumor tumor_samplename -normal  
-normal_samplename”进行变异检测。用gatk的FilterMutectCalls使用默认参数过滤变异结果，其中跨样本污染评估(可选的)。
+用gatk的Mutect2工具使用默认参数“Mutect2 -R genome.fa -I tumor.bam -I normal.bam -tumor tumor_samplename   
+-normal normal_samplename”进行变异检测。用gatk的FilterMutectCalls使用默认参数过滤变异结果，其中跨样本
+污染评估(可选的)。
 #### Copy number analysis and LOH identification
 等待后续更新    
 #### structure variants detections
