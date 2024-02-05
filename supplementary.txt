@@ -1,0 +1,222 @@
+~
+《用snakemake搭建的全基因组测序数据分析流程的补充说明》
+~
+~
+对流程的整体描述：
+   这是一个全基因组测序数据分析(Whole Genome sequencing, WGS)的流程,从测序原始
+数据(*.sra, *.fastq.gz)出来或者中间结果(*.bam)，进行分析，最后的得到样本的SNP/
+INDELS/CNV的VCF文件，以及进行注释(SV相关的更多分析，和其他分析待更新)~
+   流程的整体思路，大致是，前期的测序数据质控和比对，对于PCR建库的需要去重复
+（，做的细致的会进行碱基质量的校对），对关键区域（涉及到变异的地方）会进行重新
+比对，检测其中存在的变异snp/indels（Tumor和normal之间的比较；只有肿瘤组织还会从
+主流数据库等中获得相对粗糙的参考再进行分析；检测胚系突变好像就不用normal），和可
+以同时做cnv的检测，对变异检测的结果设置合适的阈值进行过滤，对检测到的变异进行
+注释，以及后续的分析。
+~
+~
+分析结果：
+    #1 SmallNucleotideVariant: 
+        simple nucleotide variant, 简单的核苷酸变异的分析结果, sno和indels的结果，
+    原始的结果和过滤之后的经过注释的结果
+    #2 StructureVariant:
+        结构变异，就是说，针对的是长/大片段， 包括大片段的缺失、倒置和复制等，这是
+    暂时只是做了拷贝数扩增的分析，其他暂时不知道要不要做呢，就暂时没考虑了~~~
+    #3 没有别的结果了~~~
+~
+~
+绘制WGS分析的流程图:
+   COMMAND LINE：
+   /public/home/caozhou/miniconda3/bin/snakemake -s work.smk --dag | \
+      /public/home/caozhou/miniconda4/bin/dot -Tpdf > Mutect2.WGS.dag.pdf
+   OR:
+   /public/home/caozhou/miniconda3/bin/snakemake -s work.smk --dag|sed "1,2d" | \
+      /public/home/caozhou/miniconda4/bin/dot -Tpdf > Mutect2.WGS.dag.pdf
+   # 可能会作图失败，因为脚本额外打印出了不属于dot作图的参数，用sed删除就好了~
+~
+~
+WGS流程的主模块：
+    目前流程有三个主模块( HaplotypeCaller, Mutect2, ECGEA)，因为通过下载学习不同WGS
+分析文献和理解它编写的源码，总结下就是，大佬们都有自己的想法，可能搭建流程都不太一样，
+但是流程的大致思路还是比较相似的，HaplotypeCaller和Mutect2模块是基于GATK变异检测的工
+具进行实现的（我查了文献，有文章是用GATK做的https://doi.org/10.1038/s41467-023-41805-6，
+毕竟GATK也是个很大的实验是开发的好像），ECGEA是(Zhan et al, Cancer Cell, 2022, link 
+https://www.cell.com/cancer-cell/fulltext/S1535-6108(22)00590-6#%20)开发的流程，我把
+他的源码搬运过来了，在配置文件里，把主模块换成ECGEA就可以用他们做的路程跑了。
+    另外，HaplotypeCaller我看推文是说，是用来检测germline突变的，就是整个流程跑完是
+不涉及到肿瘤和癌旁，或者肿瘤和正常组织数据之间比较分析，而Mutect2和ECGEA是要做tumor_
+vs_normal的分析。所以，请根据需要合理选择模块进行分析~~~~
+~
+~
+流程规则rules的描述:
+    模块之间的都会用到的规则在流程里是不会重复写的，比对说fastqc对测序质量评估和bwa
+比对到参考基因组这些规则是没有重复的，模块会根据自身分析的需要整个流程中选择合适的
+规则进行step-by-step分析的，但是不同的模块必将有差异可能有它专属的规则，所以,简单的
+说，并不是整个流程所有的规则都会在具体的分析预警中被用上。
+    下面展示的是在具体分析中，属于流程且被用到的了的规则。
+    all:
+        Snakemake流程搭建的固定模块，象征着流程进行到这，才算分析完成了
+~
+    startrun:
+        在正式的数据分析之前，对流程涉及到的参数和文件进行核对
+~
+    prepare:
+        对SRA数据库下载数据进行fastq-dump操作，完成*.sra --->*.fastq.gz的格式转换
+~
+    fastqc:
+        fastqc软件分析测序质量评估
+~
+    cleandata:
+        trimmomatic去接头和低质量的数据进行过滤
+~
+    BwaRun:
+        Bwa软件将测序数据比对到基因组，samtools配合完成*.sam文件转换到*.bam，以及排序和对
+    比对结果文件，建立索引
+~
+    MarkDuplicate:
+        piscard软件进行去重复，说是对于PCRfree的建库方式可以不用, 具体可以参见文档最后后面
+    解释了为啥标记重复
+~
+    #mergefastq:
+        将来自同个样本的*.bam文件进行合并，可能是针对样本测序数据过大的情况，但是一般习惯
+    都是先合并再分析，所以可能觉得找个模块不太实用就注释掉了
+~
+    RealigneTarget:
+        将BWA比对过程中所发现有潜在序列插入或者序列删除(insertion和deletion，简称Indel)的区域
+    进行重新校正。GATK的HaplotypeCaller中，会对潜在的变异区域进行相同的局部重比对，所以后面用了
+    HaplotypeCaller模块，这步可以不做的，与此同时，最新的GATK(版本>=4.0)已经没有找个模块的函数
+    可以用了，手动pass，
+    BQSRrun:
+        变异检测是一个极度依赖测序碱基质量值的步骤。因为这个质量值是衡量我们测序出来的这个碱
+    基到底有多正确的重要(甚至是唯一)指标。BQSR(Base Quality Score Recalibration)主要是通过机器
+    学习的方法构建测序碱基的错误率模型，然后对这些碱基的质量值进行相应的调整。
+~
+    HaplotypeCallerBychrom:
+        使用GATK HaplotypeCaller模块对样本中的变异进行检测。它会先推断群体的单倍体组合情况，计
+    算各个组合的几率，然后根据这些信息再反推每个样本的基因型组合。
+~
+    HaplotypeCallerAftermerge:
+        流程的上一步为了提高效率，然后就同个样本会按染色体并行分析，这步就是将来自同个样本的结
+    果进行合并
+~
+    VQSRrun:
+        变异结果质控和过滤。质控的含义和目的是指通过一定的标准，最大可能地剔除假阳性的结果，并
+    尽可能地保留最多的正确数据。首选的质控方案是GATK VQSR(Variant Quality Score Recalibration)，
+    它通过机器学习的方法利用多个不同的数据特征训练一个模型(高斯混合模型)对变异数据进行质控。 
+~
+    Suplementary: 
+        这个流程的使用进行补充说明，
+~
+~
+流程分析依赖的软件和版本信息：
+    bwa (v0.7.17-r1188):
+    fastq-dump (v3.0.6)a:
+    GATK (v4.5.0.0):
+    Java (v17.0.9):
+    piscard (v2.25.5): https://github.com/broadinstitute/picard/releases/download/2.25.5/picard.jar
+    samtools (v1.12):
+    R (v4.1.0):     
+    Trimmomatic (v0.39)：
+    In this workflow, More relative tools information under update ... 
+~
+~
+流程更新后续:
+1. 累了，应该没有后续了  <O.o>
+2.                 
+3. 
+~
+~
+    谢谢~~
+~
+~
+-------------------------------------------------------------------------
+FAQ (frequently-asked questions)
+@@@@@@@@~~~~~~~
+Question 1: 标记PCR重复
+Reply 1: 构建测序文库时细胞量的不足和打断过程中引起的部分降解，会使整体或者
+局部的DNA浓度过低。如果直接取样很可能会漏掉原本基因组上的一些DNA片段，导致
+测序不全。PCR扩增原本的目的就是为了增大微弱DNA序列片段的密度，但由于整个反应
+都在一个试管中进行，因此其他一些密度并不低的DNA片段也会被同步放大，在取样上
+机时，这些DNA片段就很可能被重复取到相同的几条去进行测序。最直接的后果就是同
+时增大了变异检测结果的假阴和假阳率。主要原因有：1) DNA打断的那一步会发生一些
+损失，主要表现是会引发一些碱基发生颠换变换(嘌呤变嘧啶或者反之)，PCR扩大了这
+个信号。2) PCR过程中也会带来新的碱基错误。3) 对于真实的变异，PCR反应可能会对
+包含某一个碱基的DNA模版扩增更加剧烈(这个现象称为PCR Bias)。因此，如果反应体
+系是对含有reference allele的模板扩增偏向强烈，那么变异碱基的信息会变小，从而
+会导致假阴。
+    PCR对真实的变异检测和个体的基因型判断都有不好的影响。GATK、Samtools、
+Platpus等这种利用贝叶斯原理的变异检测算法都是认为所用的序列数据都不是重复序
+列(即将它们和其他序列一视同仁地进行变异的判断，所以带来误导)，因此必须要进行
+标记(去除)或者使用PCR-Free的测序方案。
+~
+@@@@@@@@~~~~~~~
+Question 2: 变异结果并不适合通过VQSR来进行过滤，那么碰到这种情况的时候该怎
+么办？
+Reply 2: 要求新检测的结果中有足够多的变异，不然VQSR在进行模型训练的时候会因为
+可用的变异位点数目不足而无法进行,并不适合通过VQSR来进行过滤，那么碰到这种
+情况的时候该怎么办？这个时候，我们就不得不选择硬过滤的方式来质控了。不管我
+们的指标和阈值设置的多么完美，硬过滤的硬伤都是一刀切，它并不会根据多个维度
+的数据自动设计出更加合理的过滤模式。硬过滤作为一个简单粗暴的方法。不到不得
+已的时候不推荐使用，即使使用了，也一定要明白每一个过滤指标和阈值都
+意味着什么
+~
+@@@@@@@~~~~~~~~
+Quesution 3: 同样是变异检测的工具，GATK和sentieon有啥区别
+Reply 3: Sentieon DNAseq实施与Broad Institute的BWA-GATK HaplotypeCaller 3.3-4.1
+Best Practices Worfolw工作流程一致的算法，但采用了更效率的计算算法和企业级开
+发的软件实现。提高的计算算法使Sentieon DNAseq用户在云端计算中完成一个30X WGS
+测序FASTQ-to-VCF流程的花费小于1美元。使用同样的基于通用CPU的系统且无特殊硬件
+需求的情况下，Sentieon DNAseq在核心小时上完成FASTQ-to-VCF流程的效率为BWA-GATK
+的10倍。对于align-BAM-to-VCF流程，Sentieon比GATK快20倍。这个软件也可以应用于超
+过200K样本的同时Joint Calling，且不合并中间文件。
+    通过提升的计算算法和严格的多线程软件应用。因为Sentieon DNAseq不在高覆盖
+区域进行下采样，没有线程依赖性，所以Sentieon DNAseq没有run-to-run差异。这种一
+致性对于临床应用和需要高测序覆盖的应用十分重要。
+~
+@@@@@@~~~~~~~~
+Question 4: 胚系突变germline mutation 和体细胞突变somatic mutation 的区别 
+Reply 4: 胚系突变是来源于精子或者卵子的生殖细胞突变,可以遗传给后代;体系突变来
+源于非生殖细胞,是在生长发育过程中或者环境因素影响下后天获得的突变,通常只有部
+分细胞携带,不会遗传给后代。网传，HaplotypeCaller是专门用于检测胚系突变的
+工具，Mutect2是用于检测体细胞突变的，确实是不是这样，还需要进一步研究参数和
+算法原理才能确定。
+~
+~
+参考学习资料:
+01. 从零开始完整学习全基因组测序（WGS）数据分析之构建WGS主流程 https://mp.weixin.qq.com/s/35QIeXBV6myy4BpHFsj5nA
+02. 全基因组测序(WGS)流程及实践 https://zhuanlan.zhihu.com/p/335770966
+03. Snakemake工作流程（Reproducible Research）https://zhuanlan.zhihu.com/p/625455219
+04. Snakemake 搭建流程 https://zhuanlan.zhihu.com/p/609581144?utm_id=0
+05. GATK4 流程分析- 从fastq到vcf https://zhuanlan.zhihu.com/p/69726572/?utm_id=0
+06. GATK人种系变异最佳实践SnakeMake流程：WorkFlow简介 https://cloud.tencent.com/developer/article/2291615?areaSource=102001.19&traceId=3U1Wmf7vu1zCZsJqCBtPg
+07. 一个基于Sanakemake的WES/WGS流程 https://evvail.com/2021/01/27/2166.html
+08. GATK官方教程 / 概述及工作前的布置 https://zhuanlan.zhihu.com/p/532904317
+09. GATK github https://github.com/broadinstitute/gatk
+10. GATK 4.0 WGS germline call variant https://www.bioinfo-scrounger.com/archives/622/ 
+11. GATK best practices workflow: https://gatk.broadinstitute.org/hc/en-us/sections/360007226651-Best-Practices-Workflows
+12. GATK: https://software.broadinstitute.org/gatk/
+#VEP: https://www.ensembl.org/info/docs/tools/vep/index.html
+#fastp: https://github.com/OpenGene/fastp
+13. BWA mem2: http://bio-bwa.sourceforge.net/
+#samblaster: https://github.com/GregoryFaust/samblaster
+14. BaseRecalibrator: https://gatk.broadinstitute.org/hc/en-us/articles/13832708374939-BaseRecalibrator
+15. ApplyBQSR: https://github.com/GregoryFaust/samblaster
+16. HaplotypeCaller: https://gatk.broadinstitute.org/hc/en-us/articles/13832687299739-HaplotypeCaller
+#GenomicsDBImport: https://gatk.broadinstitute.org/hc/en-us/articles/13832686645787-GenomicsDBImport
+17. GenotypeGVCFs: https://gatk.broadinstitute.org/hc/en-us/articles/13832766863259-GenotypeGVCFs
+18. SelectVariants: https://gatk.broadinstitute.org/hc/en-us/articles/13832694334235-SelectVariants
+19. VariantRecalibrator: https://gatk.broadinstitute.org/hc/en-us/articles/13832694334235-VariantRecalibrator
+20. ApplyVQSR: https://gatk.broadinstitute.org/hc/en-us/articles/13832694334235-ApplyVQSR
+21. Picard: https://broadinstitute.github.io/picard
+#MultiQC: https://multiqc.info
+22. VCF vs Maf | 变异注释及整理为Maf格式 https://zhuanlan.zhihu.com/p/534936301?utm_id=0
+23. cnvkit website https://cnvkit.readthedocs.io/en/stable/quickstart.html
+24. cnvkit 安装和使用 https://www.jianshu.com/p/d5310b76f1f2
+25. GATK的CNV caller  https://codeleading.com/article/31171020521/
+26. 实战之 mutect2检测somatic变异流程  https://www.jianshu.com/p/a10876c7fd81
+27. Somatic short variant discovery (SNVs + Indels) https://gatk.broadinstitute.org/hc/en-us/articles/360035894731-Somatic-short-variant-discovery-SNVs-Indels-
+28. 基因突变检测之Mutect2 https://www.jianshu.com/p/4e994a171555 
+~
+~
+##contact us
+~
+~   祝开心~~

@@ -1,0 +1,94 @@
+
+#
+# Description: WGS analysis for metastatic esophageal squamous cell carcinoma
+# property: configure file for work.smk 
+#
+
+
+rawdata: /public/home/caozhou/downloads2/PRJNA744411_SRP327447/wholeexonsequencing
+workp: /public/home/caozhou/projects2/PRJNA744411_SRP327447_T
+Inputfm: FASTQ # 测序数据的格式, 这个参数值从列表 ["FATSQ", "SRA", "BAM"]中选择
+MainModule: Mutect2 # 分析用哪个主模块，这个参数值从列表 ["HaplotypeCaller", "Mutect2", "ECGEA"] 中选择
+Pipeline: /public/home/caozhou/snakepipeline/WholeGenomeSequencing/ # 用到的自定义的库路径
+
+
+#method 1111 用列表的形式
+# Sampleinformation: # ["tumor1","normal1" ] 
+# method 2222 用字典的形式
+Sampleinformation:
+   # tumor: normal # tumor_vs_normal
+   SRR15068384: SRR15068465
+#method 3333 或者直接传入一张表，有tumor\tnormal两列就好
+# Sampleinformation: /public/home/caozhou/downloads2/PRJNA744411_SRP327447/wholeexonsequencing/sample.info
+
+
+Application:  ## 分析用到的工具写这里
+   bedtools: /public/home/caozhou/installed/bedtools2/bin/bedtools # bed文件处理的工具。比如说对表格取交集
+   bcftools: /public/home/caozhou/installed/bcftools/bin/bcftools  # 专门处理VCF文件用的，比如说提取指定行
+   # bwa: /public/apps/bwa/bwa # 序列比对到基因组
+   bwa: /public/home/caozhou/installed/bwa-0.7.17/bwa
+   cnvkit: /public/home/caozhou/installed/cnvkit-master/bin/cnvkit.py
+   convert: /usr/local/bin/convert
+   fastp: /public/home/caozhou/installed/fastp-0.23.4/fastp
+   fastqc: /public/home/caozhou/installed/FastQC/fastqc # 测序质量评估
+   fastqdump: /public/home/caozhou/installed/sratoolkit.3.0.6-ubuntu64/bin/fastq-dump # 将SRA转换成FASTQ.gz
+   GATK: /public/home/caozhou/installed/gatk-4.5.0.0/gatk-package-4.5.0.0-local.jar # 变异检测工具
+   # GATK: /public/home/caozhou/installed/gatk-4.0.3.0/gatk-package-4.0.3.0-local.jar
+   gdc-client: /public/home/caozhou/installed/gdc-client_v1.6.1/gdc-client # TCGA数据下载工具
+   multiqc: /public/home/caozhou/miniconda3/bin/multiqc # 整合质控结果
+   java: /public/home/caozhou/installed/jdk-17.0.9/bin/java
+   # java: /public/apps/java/jdk1.8.0_211/bin/java
+   picard: /public/home/caozhou/installed/picard/picard.jar # 对测序数据去重复
+   python: /public/home/caozhou/miniconda3/bin/python3.11
+   Rscript: /public/apps/R-4.1.0/bin/Rscript
+   samtools: /public/apps/samtools-1.12/bin/samtools 
+   sentieon: /public/home/caozhou/installed/sentieon-genomics-201808.06/bin/sentieon # 变异检测工具
+   snpEff: /public/home/caozhou/installed/snpEff/snpEff.jar # 对变异检测结果进行注释
+   SnpSift: /public/home/caozhou/installed/snpEff/SnpSift.jar
+   # trimmomatic: /public/home/caozhou/installed/Trimmomatic-0.39/trimmomatic-0.39.jar # 去接头和过滤低质量序列
+
+ 
+Script: ## 分析用到的R/perl/python脚本放这里
+   ECGEA_vcf2anno: /public/home/caozhou/snakepipeline/WholeGenomeSequencing/scripts/02_vcf2anno.py
+   ECGEA_vcf2maf_mutsig: /public/home/caozhou/snakepipeline/WholeGenomeSequencing/scripts/03_vcf2maf_mutsig.py
+
+
+Files: ## 分析用到其他文件放这里
+   Supplementary: /public/home/caozhou/snakepipeline/WholeGenomeSequencing/supplementary.txt
+
+
+Parameter: ## 参数设置写这里，目前还么有还所的参数接口
+   bwaparams: #bwa的参数，是新加的，
+      HumanGenomeFasta: /public/home/caozhou/installed/gatk-4.5.0.0/bundle/hg38/bwa_index_BuildByMyself2/hg38.fa
+      # HumanGenomeFasta: /public/home/caozhou/installed/gatk-4.5.0.0/bundle/hg38/bwa_index_BuildByMyself/Homo_sapiens_assembly38.fasta
+      # HumanGenomeFasta: /public/home/caozhou/installed/gatk-4.5.0.0/bundle/hg19/bwa_index_BuildByMyself/ucsc.hg19.fasta
+      marksecondary: True # [False, True]
+      Kvalue: 
+   GATKparams:
+      bundle: /public/home/caozhou/installed/gatk-4.5.0.0/bundle/
+      datatype: WGS # ["WGS", "WES"]
+      genomeversion: hg38 # GATK 用到的参考基因组，变异文件snp/indels.vcf对应的基因组版本，
+      #             # 从列表["hg38", "hg19"]中选择参数
+      interval: NULL.bed
+      BQSRparams:
+         known_sites: [ dbsnpvcf, indelsvcf_2 ] 
+         # 从列表["dbsnpvcf", "indelsvcf_1", "indelsvcf_2", "snps1000Gvcf"]选择
+         # dbsnpvcf: dbsnp_146.hg38.vcf.gz,
+         # indelsvcf_1: 1000G_phase1.indels.hg38.vcf.gz 
+         # indelsvcf_2: Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
+         # snps1000Gvcf: 1000G_phase1.snps.high_confidence.hg38.vcf.gz
+      Mutect2params:
+         fir2_need: False # [False, True], set --f1r2-tar-ga parameter,
+         gmr_need: False # [False, True], germline resources
+         pon_need: False # [False, True], the panel of normal,
+         parallerbychrom: bychrom # ["bychrom","chromall"]
+      sCNVcaller:
+         run_need: False # [False, True]
+         Allelic_need: False # [False, True]
+         bychrom: bychrom # ["bychrom","chromall"]
+      dbsnp_v: 146 # ["138", "144", "146"]
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+#~ THE END

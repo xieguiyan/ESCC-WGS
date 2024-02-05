@@ -1,0 +1,71 @@
+
+configfile: "null.yaml"
+GATK = config["Application"]["GATK"]
+java = config["Application"]["java"]
+genomeversion = config["genomeversion"]
+bundlehg = config["bundlehg"]
+indelsvcf_1 = config["indelsvcf_1"]
+indelsvcf_2 = config["indelsvcf_2"]
+dbsnpvcf = config["dbsnpvcf"]
+reference = config["reference"]
+workp = config["workp2"]
+chrom = config["chrom"]
+
+rule germlinecnvcaller:
+   input:
+      Vcf = workp + "/09_vqsrresult/{sample}.snps.indels.VQSR.vcf",
+      BqsrBam = workp+"/07_bqsrresult/{sample}.sorted.markdup.BQSR.bam",
+   output:
+      hdf5 = workp + "/10_gcnvcaller/{sample}.BQSR.hdf5",
+      completed = workp + "/10_gcnvcaller/{sample}.completed",
+   # log:
+   #    # workp + "/10_gcnvcaller/{sample}.log",
+   params:
+      status = "null",
+   shell:
+       """
+       outputp=$(echo \"{output.completed}\" |grep -o \"/.*/\")
+       if [ ! -d ${{outputp}} ];then mkdir -p ${{outputp}} ;fi
+       interval_list=${{outputp}}/genome.{genomeversion}.preprocessed.interval_list
+       if [ ! -f ${{interval_list}} ]
+       then
+          time {java} -jar {GATK}  PreprocessIntervals \\
+             -R {reference}  --padding 0  -imr OVERLAPPING_ONLY  \\
+             -O ${{interval_list}}
+       fi
+       time {java} -jar {GATK}  CollectReadCounts -R {reference} -L ${{interval_list}} \\
+           -imr OVERLAPPING_ONLY -I {input.BqsrBam} -O {output.hdf5}
+       
+       filtered_interval_list=${{interval_list}}
+       time {java} -jar {GATK} DetermineGermlineContigPloidy \
+          -L ${{filtered_interval_list}} \\
+          -I {output.hdf5} \\
+          `# --contig-ploidy-priors 8.cnv/gatk/contig_ploidy_priors.tsv ` \\
+          -imr OVERLAPPING_ONLY  \\
+          -O ${{outputp}} \\
+          --output-prefix ploidy \\
+          --verbosity DEBUG
+       time {java} -jar {GATK} GermlineCNVCaller \\
+          --run-mode COHORT -L ${{filtered_interval_list}} \\
+          -I {output.hdf5} \\
+          --contig-ploidy-calls ${{outputp}}/ploidy-calls \\
+          `# --annotated-intervals ${{outputp}}/grch38.annotated.tsv` \\
+          -imr OVERLAPPING_ONLY \\
+          --output ${{outputp}}/cohort \\
+          --output-prefix cohort \\
+          --verbosity DEBUG
+       samplei={wildcards.sample}
+       dict=$( echo \"{reference}\" |grep -o \"/.*\.\").dict
+       time {java} -jar {GATK} PostprocessGermlineCNVCalls \\
+          --model-shard-path ${{outputp}}/cohort/cohort-model \\
+          --calls-shard-path ${{outputp}}/cohort/cohort-calls \\
+          --allosomal-contig chrX --allosomal-contig chrY \\
+          --contig-ploidy-calls ${{outputp}}/ploidy-calls   \\
+          --sample-index ${{samplei}} \\
+          --output-genotyped-intervals ${{outputp}}/genotyped-intervals-cohort.${{samplei}}.vcf.gz \\
+          --output-genotyped-segments  ${{outputp}}/genotyped-segments-cohort.${{samplei}}.vcf.gz \\
+          --sequence-dictionary ${{dict}}
+       echo \"completed!!\" >{output.completed}
+       echo \"[## gCNVcaller ] date: $(date), parameter: {wildcards.sample}, status: finished ...\" >>{params.status}
+       """
+
