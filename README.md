@@ -35,7 +35,7 @@ picard使用默认参数重复。
 ApplyBQSR不需要额外参数简单输入输出就好。
 #### SNV and indel calling
 用gatk的Mutect2工具使用默认参数`“Mutect2 -R genome.fa -I tumor.bam -I normal.bam -tumor tumor_samplename`   
-`-normal normal_samplename”`进行变异检测。用gatk的FilterMutectCalls使用默认参数过滤变异结果，其中
+`-normal normal_samplename”`进行变异检测。用gatk的FilterMutectCalls使用默认参数过滤变异结果，其中    
 跨样本污染评估(可选的)。
 #### Copy number analysis and LOH identification
 等待后续更新    
