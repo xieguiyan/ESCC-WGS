@@ -30,12 +30,12 @@ picard使用默认参数重复。
 #### 序列重新比对
 因为在GATK4.0版本之后，HapplotypeCaller会进行局部重新比对，所以这部分就不做了，
 #### 碱基质量校对
-使用gatk的BaseRecalibrator和ApplyBQSR工具进行局部重新比对，其中BaseRecalibrator使用参数`“--known-sites    
+使用gatk的BaseRecalibrator和ApplyBQSR工具进行局部重新比对，其中BaseRecalibrator使用参数`“--known-sites   
 dbsnp_146.hg38.vcf.gz --known-sites Mills_and_1000G_gold_standard.indels.hg38.vcf.gz”`得到校准表，   
 ApplyBQSR不需要额外参数简单输入输出就好。
 #### SNV and indel calling
-用gatk的Mutect2工具使用默认参数“Mutect2 -R genome.fa -I tumor.bam -I normal.bam -tumor tumor_samplename   
--normal normal_samplename”进行变异检测。用gatk的FilterMutectCalls使用默认参数过滤变异结果，其中跨样本
+用gatk的Mutect2工具使用默认参数`“Mutect2 -R genome.fa -I tumor.bam -I normal.bam -tumor tumor_samplename   
+-normal normal_samplename”`进行变异检测。用gatk的FilterMutectCalls使用默认参数过滤变异结果，其中跨样本
 污染评估(可选的)。
 #### Copy number analysis and LOH identification
 等待后续更新    
