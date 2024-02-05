@@ -12,14 +12,14 @@ MainModule: Mutect2 # 分析用哪个主模块，这个参数值从列表 ["Hapl
 Pipeline: /public/home/caozhou/snakepipeline/WholeGenomeSequencing/ # 用到的自定义的库路径
 
 
-#method 1111 用列表的形式
+## method 1111 用列表的形式
 # Sampleinformation: # ["tumor1","normal1" ] 
-# method 2222 用字典的形式
-Sampleinformation:
-   # tumor: normal # tumor_vs_normal
-   SRR15068384: SRR15068465
-#method 3333 或者直接传入一张表，有tumor\tnormal两列就好
-# Sampleinformation: /public/home/caozhou/downloads2/PRJNA744411_SRP327447/wholeexonsequencing/sample.info
+## method 2222 用字典的形式
+# Sampleinformation:
+#   # tumor: normal # tumor_vs_normal
+#   SRR15068384: SRR15068465
+## method 3333 或者直接传入一张表，有tumor\tnormal两列就好
+Sampleinformation: /public/home/caozhou/downloads2/PRJNA744411_SRP327447/wholeexonsequencing/sample.info
 
 
 Application:  ## 分析用到的工具写这里
