@@ -59,9 +59,10 @@ python(2.7.17): /
 &emsp;&emsp;note: 标记`“*”`的软件是说在流程中作用相对重要，不可或缺~~
 
 ### 依赖的数据库和除测序数据之外的输入文件
-&emsp;&emsp;**bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致**；  
-&emsp;&emsp;gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从gatk官网的Resource/[bundle](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/)   
-下载，但是需要借助lftp工具下载，所以请先用`"sudo apt-get install lftp"`安装lftp。  
+&emsp;&emsp;**bwa比对时用到的基因组版本，应该和gatk分析用的基因组版本保持一致**；   
+&emsp;&emsp;gatk变异检测时用到的数据库和文件，包括基因组及其索引文件，都可以从gatk官网的Resource/bundle路径下    
+"ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/"下载，但是需要借助lftp工具下载，所以请先安装lftp,   
+下载的话，`lftp {url}`登录，`mirror hg38`下载整个目录，`get {file}` 具体文件。    
 <br>
 <br>
 ## 流程的使用说明
@@ -71,7 +72,7 @@ python(2.7.17): /
 #### 快速入手 
   工具`Autoconfig.py`可以引导和帮助您快速入手，使用方法参考下面的简单例子    
 ```
- Command: python3 Autoconfig.py -w workp/  -d rawdata/  -s sample.info  -r
+ Command: python3 Autoconfig.py -w workp/  -d rawdata/ -s sample.info  -r
 ```  
 &emsp;&emsp;参数描述：  
 &emsp;&emsp;&emsp;&emsp;&emsp;-s/--sample-information: 记录样本信息的表格  
@@ -95,11 +96,12 @@ python3 Autoconfig.py -h # 查看更多的帮助信息和参数设置方法。
 $workp/work.WGS.yaml；
 
 &emsp;&emsp;步骤2：修改配置文件work.WGS.yaml里面的参数，其中，*workp*、*rawdata*和 *sampleinformation* 3个  
-参数是必须要修改的，其他参数的话可以根据需要修改；    
+参数是每次分析都必须要修改的，其他参数，1) 对于使用到的软件和其他文件数据库等，是流程依赖的，请在第一次使用  
+的时候配置正确，2)分析依赖的参数请根据实验需求进行选择性的修改；    
 
 &emsp;&emsp;步骤3：确认没问题之后，运行的命令 `“nohup snakemake -s work.smk --cores 64 1>run.o 2>&1”`  
 (如果snakemake没有添加到您的环境变量里，这里的snakemake换成绝对/相对路径)，就可以正式开始  
-分析。所以，使用前请先下载安装好[snakemake](https://pypi.org/project/snakemake/)，对于snakemake的使用不熟悉的地方，可以学习[手册](https://snakemake.readthedocs.io/en/stable/)  
+分析。所以，使用前请先下载安装好[snakemake](https://pypi.org/project/snakemake/)，查看[手册](https://snakemake.readthedocs.io/en/stable/)了解更多的相关命令     
 
 &emsp;&emsp;步骤4（可选的）：到步骤3，其实**ESCC-WGS**已经可以正常运行了，但是一般在集群上有专门的资源和  
 任务调度系统(如slurm和LSF)，所以建议您换种方式，如用slurms系统，编辑run.sh内容如下：    
