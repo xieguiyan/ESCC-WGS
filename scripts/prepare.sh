@@ -5,6 +5,7 @@ wkrawdata=$( echo "${snakemake_output[0]}" |grep -o "/.*/" )
 if [ ! -d ${wkrawdata} ] ;then mkdir -p ${wkrawdata} ;fi
 for datain in  "${rawdata}/${sample}" "${rawdata}"
 do
+   if [ ! -d ${datain} ] ; then continue ; fi  ##update 24.10.06
    if [[ ${snakemake_config[Inputfm]} == "BAM" ]] && [ -f ${datain}/${sample}.bam ] && \
       [ ! -f ${wkrawdata}/${sample}.bam ]
    then
@@ -19,7 +20,7 @@ do
    fi
 done
 if [ -f ${wkrawdata}/${sample}.sra ] && \
-   [ $(ls  ${wkrawdata}/ |grep "${sample}.*fastq.gz" |wc -l ) -lt 1 ] 
+   [ $(ls  ${wkrawdata}/ |grep "${sample}.*fastq.gz$" |wc -l ) -lt 1 ] 
 then 
    ${snakemake_params[fastqdump]} --split-3 --gzip\
       -O ${wkrawdata}/ ${wkrawdata}/${sample}.sra 1>${snakemake_log[0]}
