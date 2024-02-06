@@ -44,12 +44,13 @@ def check_sample_information(sample_info):
    print("  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 def checkpipemodules(abspath, modulelist ):
-  print("核对下pipeline")
-  for mdone in modulelist:
-    if not os.path.exists( abspath + "/" + mdone ): 
-       print("ERROR:: Autoconfig.py要和WGS的流程下'%s'在同个目录下"%mdone )
-       exit(-1)
-  print("  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+   print("核对下pipeline")
+   for mdone in modulelist:
+      if not os.path.exists( abspath + "/" + mdone ): 
+        print("ERROR:: Autoconfig.py要和WGS的流程下'%s'在同个目录下"%mdone )
+        exit(-1)
+   print("流程的相关模块都在~")
+   print("  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 def checksoftwareanddata(configfile, sd): # sd, software and database absolute path
    print("正在核对WGS流程需要的软件和工具::::::")   
@@ -164,7 +165,10 @@ def main():
       print("它就不会缺什么参数跟你要什么参数了!!!!!\033[0m\n")
       time.sleep(2)
    else:
-      print("正在用您提供的参数生成工作脚本和配置文件....")
+      print("正在用您提供的参数生成工作脚本和配置文件....\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+   if not os.path.exists( args.workp ):
+      print("检测到%s不存在，正在新建~~~\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"%args.workp)
+      os.makedirs(args.workp, exist_ok=True)
    config_file_name = "" 
    config_file_name = "work.WGS.yaml"
    work_script = "%s/work.smk"%pipeplinep
